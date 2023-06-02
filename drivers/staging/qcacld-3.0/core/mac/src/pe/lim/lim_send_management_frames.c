@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2011-2021 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * Permission to use, copy, modify, and/or distribute this software for
  * any purpose with or without fee is hereby granted, provided that the
@@ -49,6 +50,7 @@
 #include "sme_trace.h"
 #include "rrm_api.h"
 #include "qdf_crypto.h"
+#include "parser_api.h"
 
 #include "wma_types.h"
 #include <cdp_txrx_cmn.h>
@@ -633,6 +635,7 @@ lim_send_probe_rsp_mgmt_frame(struct mac_context *mac_ctx,
 	populate_dot11f_ssid(mac_ctx, (tSirMacSSid *) ssid, &frm->SSID);
 	populate_dot11f_supp_rates(mac_ctx, POPULATE_DOT11F_RATES_OPERATIONAL,
 		&frm->SuppRates, pe_session);
+	populate_dot11f_tpc_report(mac_ctx, &frm->TPCReport, pe_session);
 
 	populate_dot11f_ds_params(
 		mac_ctx, &frm->DSParams,
@@ -2062,9 +2065,6 @@ lim_send_assoc_req_mgmt_frame(struct mac_context *mac_ctx,
 		populate_dot11f_wapi_opaque(mac_ctx,
 			&(pe_session->lim_join_req->rsnIE),
 			&frm->WAPIOpaque);
-		QDF_TRACE_HEX_DUMP(QDF_MODULE_ID_PE, QDF_TRACE_LEVEL_DEBUG,
-			&frm->WAPIOpaque,
-			sizeof(tDot11fIEWAPIOpaque));
 #endif /* defined(FEATURE_WLAN_WAPI) */
 	}
 	/* include WME EDCA IE as well */
